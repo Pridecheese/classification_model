@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2 as cv
 import os
+from matplotlib.pyplot import imshow
+
 from test_cv2 import removeBackgroundFolder,singleRemoveBackground
 from tensorflow.keras import Sequential,Input
 from tensorflow.keras.layers import Dense,Conv2D,Dropout,MaxPool2D
@@ -40,6 +42,23 @@ def readImageDirect(rpath):
                 cnt+=1
                 print(".", end="")
         print()
-readImageDirect(r"d:\imgs")#데이터 증강 호출
-np.random.seed=10
-tf.random.set_seed(10)
+def load_directory(rootpath):#{label:[이미지 리스트]}
+    f_lists = os.listdir(rootpath)
+    print(f_lists)
+    y_labels = []
+    x_files = []
+    for label,fpath in enumerate(f_lists):
+        print(".", end="")
+        f_name = r"{}\{}".format(rootpath,fpath)
+        f_names = os.listdir(f_name)
+        #print(f_names)
+        for p in f_names:
+            y_labels.append(label)
+            fimg = cv.imread(r"{}\{}".format(f_name,p))
+            fimg = cv.cvtColor(fimg,cv.COLOR_BGR2RGB)
+            fimg = cv.resize(fimg,(64,64))
+            x_files.append(fimg)
+    return f_lists,np.array(y_labels),np.array(x_files)
+
+if __name__=="__main__":
+    readImageDirect(r"d:\imgs")#데이터 증강 호출
