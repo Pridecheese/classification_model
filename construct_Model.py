@@ -8,19 +8,17 @@ from matplotlib.pyplot import imshow
 from sklearn.utils.validation import validate_data
 from sympy import shape
 from sympy.tensor.array.arrayop import Flatten
-from classification_model import load_directory
+from classification_model import getTrainData
 from test_cv2 import removeBackgroundFolder,singleRemoveBackground
 from tensorflow.keras import Sequential,Input
 from tensorflow.keras.layers import Dense,Conv2D,Dropout,MaxPool2D,Flatten
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-label_list,y_data,x_data = load_directory(r"d:\imgs")
-print(y_data.shape)
-print(x_data.shape)
-print(len(label_list))
-print(label_list[0])
-# suffle
-from sklearn.model_selection import train_test_split
-x_train,x_test,y_train,y_test = train_test_split(x_data,y_data,test_size=0.2,random_state=10,stratify=y_data)
+data_sets = getTrainData(r"d:\imgs")
+label_list = data_sets["label_list"]
+x_train,y_train = data_sets["train"]
+x_test,y_test = data_sets["test"]
+x_train = x_train/255.
+x_test = x_test/255.
 print(x_train.shape)
 print(x_test.shape)
 print(y_train.shape)
@@ -44,29 +42,29 @@ print(y_train[0])
 
 model = Sequential()
 model.add(Input(shape=(64,64,3)))
-model.add(Conv2D(filters=64,kernel_size=5,strides=1,padding="same",activation="relu"))
-model.add(MaxPool2D(pool_size=(3,3),padding="same"))
+model.add(Conv2D(filters=64,kernel_size=5,strides=2,padding="same",activation="relu"))
+model.add(MaxPool2D(3,2,padding="same"))
 model.add(Dropout(0.2))
 model.add(Conv2D(filters=128,kernel_size=5,strides=1,padding="same",activation="relu"))
-model.add(MaxPool2D(pool_size=(3,3),padding="same"))
-model.add(Dropout(0.2))
+model.add(MaxPool2D(3,2,padding="same"))
+model.add(Dropout(0.3))
 model.add(Conv2D(filters=256,kernel_size=5,strides=1,padding="same",activation="relu"))
-model.add(MaxPool2D(pool_size=(3,3),padding="same"))
-model.add(Dropout(0.2))
+model.add(MaxPool2D(3,2,padding="same"))
+model.add(Dropout(0.3))
 model.add(Flatten())
-model.add(Dropout(0.4))
+model.add(Dropout(0.3))
 model.add(Dense(256,activation="relu"))
 model.add(Dropout(0.3))
-model.add(Dense(64,activation="relu"))
-model.add(Dropout(0.3))
+model.add(Dense(128,activation="relu"))
+model.add(Dropout(0.4))
 model.add(Dense(32,activation="relu"))
-model.add(Dropout(0.1))
+model.add(Dropout(0.3))
 model.add(Dense(10,activation="softmax"))
 model.summary()
 model.compile(loss="categorical_crossentropy",optimizer="adam",metrics=["acc"])
 cb = tf.keras.callbacks.EarlyStopping(
     monitor='val_acc',
-    patience=20,
+    patience=10,
     verbose=1,
     mode='auto',
     restore_best_weights=True
