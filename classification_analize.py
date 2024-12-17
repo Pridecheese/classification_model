@@ -51,6 +51,7 @@ y_conv_true = np.array([label_list[np.argmax(ll)] for ll in y_test])
 y_conv_pred = np.array([label_list[np.argmax(ll)] for ll in y_pred])
 print(y_conv_true.shape)
 print(y_conv_pred.shape)
+
 print(y_conv_true[1:10])
 print(y_conv_pred[1:10])
 #confusion_matrix()
