@@ -1,6 +1,6 @@
 import os
-from navercrawling import get_naver
-from imageCrawling import get_google
+from Crawling.navercrawling import get_naver
+from Crawling.imageCrawling import get_google
 keywords=None
 searchKeywords=None
 cnt_count=None
