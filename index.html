@@ -5,16 +5,17 @@
     <title>분류모델</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="common_menu.js"></script>
     <script src="dataset.js"></script>
     <style>
       *{margin:0;padding:0}
       #container{height:75vh;width:99vw}
       #mainmenu:hover{cursor:pointer}
-      #view_menu{width:35vw;height:40vw;position:absolute;left:0.5vw;top:0.5vw;
+      #view_menu{z-index:133;width:30vw;min-width:20rem;height:96vh;position:fixed;left:-29.9vw;top:0.5vw;
       border:2px solid gray;border-style:ridge;box-shadow:2px 2px 2px 2px black;
-      display:none}
+      border-top-right-radius:2vw;border-bottom-right-radius:2vw;text-align:center;font-size:1.2vw}
       .content{margin:0.5vw;
-        float:left;width:10vw;
+        float:left;width:18.5vw;
         height:15vw;border:1px solid gray;
         opacity:0.9;border-radius:5px
       }
@@ -28,14 +29,30 @@
         position:absolute;max-width:90%;max-height:80%;left:2vw;top:3vw
       }
       #display_closer:hover{color:red}
+      a{color:blue;text-decoration:none}
+      #tips{padding-left:1vw;font-size:1vw;color:DarkMagenta;position:absolute;bottom:3vw}
     </style>
     <script>
       $(()=>{
+        for (let i=0;i<menu_sets.length;i++){
+          let ele = $(`<p style="margin-top:2.5vw" ix=${i}><a class='menus' href="${menu_sets[i].url}"> ${menu_sets[i].mtitle} </a></p>`)
+          $("#menubar").append(ele)
+          ele.on("mouseover",function(){
+            $("#tips").text(menu_sets[i].tips)
+          })
+        }
         $("#mainmenu").click(()=>{
-          $("#view_menu").css("display","block")
+          $("#view_menu").animate({left:"0.2vw"},500)
         })
-        $("#view_menu").on("mouseout",()=>{
-          $("#view_menu").css("display","none")
+        $("#view_menu").on("mouseenter",function(){
+          $(this).animate({left:"0.2vw"},500,function(){
+            $("#cover").css("display","block")
+          });
+        })
+        $("#menu_closer").click(function(){
+          $("#view_menu").animate({left:"-29.9vw"},500,function(){
+            $("#cover").css("display","none")
+          });
         })
         let inHtml = ""
         for (let i=0;i<data_sets.length;i++){
@@ -69,6 +86,7 @@
           $(this).css("display","none")
           $("#display").css("display","none")
           $("#display_closer").css("display","none")
+          $("#menu_closer").trigger("click")
         })
         $("#display_closer").click(()=>{
            $("#cover").trigger("click")
@@ -79,8 +97,13 @@
   <body>
     <span id="mainmenu" style="z-index:3;top:1vw;left:0.5vw;font-size:4vw;color:white;position:absolute"
         class="material-symbols-outlined">menu</span>
-    <div id="view_menu" style="background:red">
-
+    <div id="view_menu" style="background:lightgray">
+      <span id="menu_closer" class="material-symbols-outlined" style="position:absolute;
+        top:0.4vw;left:27vw;font-size:2.5vw;z-index:456;cursor:pointer">
+        close
+      </span>
+      <div id="menubar"></div>
+      <div id="tips"></div>
     </div>
     <h2 style="font-size:3vw;padding:1vw 0;text-align:center;background:black;color:white"> 이미지 컨볼루션 분류 모델 CNN </h2>
     <p style="text-align:right;margin-right:3vw;margin-bottom:0.8vw">
@@ -114,7 +137,7 @@
   </body>
   <style>
     #cover{display:none;z-index:99;margin-left:0.6vw;width:99vw;height:99vh;
-      background:yellow;opacity:0.8;position:absolute;top:0;left:0}
+      background:GhostWhite;opacity:0.7;position:absolute;top:0;left:0}
     #display{display:none;z-index:100;padding:1vh;width:90vw;height:79vh;top:10vh;
       left:5vw;position:absolute;background:white;border-radius:1vw}
   </style>
